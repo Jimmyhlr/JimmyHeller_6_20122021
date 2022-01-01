@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const productSchema = mongoose.Schema({ // mongoose.Schema permet de créer un schéma de données pour la BDD
-    userId: { type: String, required: true },
+    // userId: { type: String, required: true }, champ ID créé automatiquement par MongoDB
     name: { type: String, required: true },
     manufacturer: { type: String, required: true },
     description: { type: String, required: true },
@@ -12,7 +12,6 @@ const productSchema = mongoose.Schema({ // mongoose.Schema permet de créer un s
     dislikes: { type: Number, required: true },
     usersLiked: { /*/////////////////////////*/ },
     usersDisliked: { /*/////////////////////////*/ },
-    // le champ "Id" est automatiquement généré par Mongoose
 });
 
-module.exports = mongoose.model('products', productSchema); // mongoose.model transforme le schéma en modèle utilisable
+module.exports = mongoose.model('product', productSchema); // mongoose.model transforme le schéma en modèle utilisable

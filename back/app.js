@@ -8,16 +8,17 @@ const mongoose = require('mongoose');
 // gérer les relations entre les documents
 // communiquer directement avec la BDD pour la lecture et l'écriture des documents
 
-const products = require('./models/products');
-
-const app = express();
-// crée une application Express
+const productRoutes = require('./routes/product');
+const userRoutes = require('./routes/user');
 
 mongoose.connect('mongodb+srv://JimmyHeller:4z4gpa0301@p6-heller-jimmy.hn0gh.mongodb.net/P6HellerJimmy?retryWrites=true&w=majority', // adresse copiée depuis le cluster MongoDB correspondant
   { useNewUrlParser: true,
     useUnifiedTopology: true })
   .then(() => console.log('Successfully connected to MongoDB!'))
   .catch(() => console.log('Connexion to MongoDB failed!'));
+
+const app = express();
+// crée une application Express
 
 app.use(express.json());
 // middleware du framework Express => permet d'extraire le corps JSON d'une requête POST venant du front-end
@@ -33,6 +34,9 @@ app.use((req, res, next) => {
     // permet d'envoyer des requêtes avec les méthodes mentionnées ( GET ,POST , etc.)
     next();
   });
+
+app.use('/api/sauces', productRoutes);
+app.use('/api/auth', userRoutes);
 
 module.exports = app;
 // exporte l'application pour qu'elle soit accessible depuis les autres fichiers du projet
