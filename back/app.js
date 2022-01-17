@@ -1,13 +1,12 @@
 const express = require('express');
 // importation du framework Express
-
 const mongoose = require('mongoose');
 // importation du package mongoose, facilite les interactions avec MongoDB
 // permet à la BDD de :
 // valider le format des données
 // gérer les relations entre les documents
 // communiquer directement avec la BDD pour la lecture et l'écriture des documents
-
+const path = require('path');
 const productRoutes = require('./routes/product');
 const userRoutes = require('./routes/user');
 
@@ -35,8 +34,11 @@ app.use((req, res, next) => {
     next();
   });
 
+app.use('/images', express.static(path.join(__dirname, 'images')));
+
 app.use('/api/sauces', productRoutes);
 app.use('/api/auth', userRoutes);
+
 
 module.exports = app;
 // exporte l'application pour qu'elle soit accessible depuis les autres fichiers du projet

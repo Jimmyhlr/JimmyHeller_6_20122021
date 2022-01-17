@@ -1,32 +1,36 @@
 const bcrypt = require('bcrypt'); // importe le module "bcrypt" => cryptage de mdp, installé avec npm install --save bcrypt
 const jwt = require('jsonwebtoken'); // importe le module "jsonwebtoken" => création de token d'authentification, installé avec npm install --save jsonwebtoken
 
-const user = require('../models/user');
+const User = require('../models/User');
 
 
 
 exports.signup = (req, res, next) => {
+    console.log('demande de création de nouvel utilisateur');
     bcrypt.hash(req.body.password, 10) // appelle la fonction de hachage bcrypt et demande de hasher le mdp 10x (plus la valeur est élevée, plus le mdp est sécurisé mais la procédure prend du temps)
     .then(hash => {
-        const user = new user({         // crée un nouvel utilisateur
+        console.log('mot de passe haché');
+        const user = new User({         // crée un nouvel utilisateur
             email: req.body.email,      // avec l'adresse email saisie dans la requête
             password: hash              // et le mdp haché
         });
+        console.log('enregistrement nouvel utilisateur');
         user.save()                     // enregistre le nouvel utilisateur
         .then(() => res.status(201).json({ message: 'utilisateur créé'}))      // envoie la réponse "utilisateur créé"
         .catch(error => res.status(400).json({ error }))
     })
-    .catch(error => res.status(500).json({ error }));
+    .catch(error => res.status(503).json({ error }));
 };
 
 
 
 exports.login = (req, res, next) => {
-    user.findOne({ email: req.body.email }) // user.findOne => trouve 1 seul utilisateur dans la BDD
+    User.findOne({ email: req.body.email }) // user.findOne => trouve 1 seul utilisateur dans la BDD
     .then(user => {
         if (!user) { // = si aucun user n'a été trouvé
             return res.status(401).json({ error: 'Utilisateur non trouvé' }); // renvoi l'erreur "utilisateur non trouvé"
         }
+        console.log(user._id);
         bcrypt.compare(req.body.password, user.password) // bcrypt compare le mdp envoyé par l'utilisateur avec le mdp haché enregistré pour ce user dans la BDD
         .then(valid => { // boolean // revient à demander si la comparaison est valable ou non
             if (!valid) {  // = si la comparaison n'est pas valable
@@ -46,3 +50,4 @@ exports.login = (req, res, next) => {
     })
     .catch(error => res.status(500).json({ error })); // uniquement pour renvoyer un problème de connexion, car MongoDB renverra une réponse même si aucun utilisateur n'a été trouvé
 };
+
