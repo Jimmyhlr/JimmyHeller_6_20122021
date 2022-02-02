@@ -10,5 +10,6 @@ router.put('/:id', auth, multer, productCtrl.modifyProduct);
 router.delete('/:id', auth, multer, productCtrl.deleteProduct);
 router.get('/:id', auth, multer, productCtrl.getOneProduct);
 router.get('', auth, multer, productCtrl.getAllProducts);
+router.post('/:id/like', auth, multer, productCtrl.likeProduct)
 
 module.exports = router;
